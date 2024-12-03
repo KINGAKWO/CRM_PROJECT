@@ -1,0 +1,9 @@
+.vercel
+node_modules
+.env.development
+.env.production
+.env.staging
+.env.example
+build
+crm-hubspot-clone
+
