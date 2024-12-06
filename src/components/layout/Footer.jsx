@@ -4,19 +4,24 @@ import { styled } from '@mui/material/styles';
 
 const StyledFooter = styled('footer')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
-  padding: theme.spacing(3, 0),
+  padding: theme.spacing(2),
+  [theme.breakpoints.up('sm')]: {
+    padding: theme.spacing(3, 0),
+  },
   marginTop: 'auto',
   borderTop: `1px solid ${theme.palette.divider}`,
 }));
 
 const FooterSection = styled(Box)(({ theme }) => ({
   display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  [theme.breakpoints.down('sm')]: {
-    flexDirection: 'column',
-    gap: theme.spacing(2),
-    textAlign: 'center',
+  flexDirection: 'column',
+  gap: theme.spacing(2),
+  textAlign: 'center',
+  [theme.breakpoints.up('sm')]: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    textAlign: 'left',
   },
 }));
 

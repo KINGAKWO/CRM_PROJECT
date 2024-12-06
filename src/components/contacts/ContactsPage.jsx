@@ -20,6 +20,7 @@ import AddIcon from '@mui/icons-material/Add';
 import CustomerForm from './CustomerForm';
 import { api } from '../../services/api';
 import { Alert, Snackbar } from '@mui/material';
+import { useMediaQuery } from 'react-responsive';
 
 const ContactsPage = () => {
   const [contacts, setContacts] = useState([]);
@@ -27,13 +28,15 @@ const ContactsPage = () => {
   const [formOpen, setFormOpen] = useState(false);
   const [editContact, setEditContact] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const isMobile = useMediaQuery({ maxWidth: 768 });
 
   const fetchContacts = async () => {
     try {
-      const data = await api.customers.getAll();
-      setContacts(data);
+      const response = await api.customers.getAll();
+      setContacts(response.data || response);
     } catch (error) {
       showSnackbar('Failed to load contacts', 'error');
+      console.error('Error fetching contacts:', error);
     } finally {
       setLoading(false);
     }
@@ -90,14 +93,27 @@ const ContactsPage = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h4">Contacts</Typography>
+    <Box sx={{ p: { xs: 2, sm: 3 } }}>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: { xs: 'column', sm: 'row' },
+        justifyContent: 'space-between',
+        alignItems: { xs: 'stretch', sm: 'center' },
+        mb: { xs: 2, sm: 3 },
+        gap: 2
+      }}>
+        <Typography 
+          variant="h4"
+          sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}
+        >
+          Contacts
+        </Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           color="primary"
           onClick={handleAddClick}
+          fullWidth={isMobile}
         >
           Add Contact
         </Button>
@@ -108,7 +124,22 @@ const ContactsPage = () => {
           <CircularProgress />
         </Box>
       ) : (
-        <TableContainer component={Paper}>
+        <TableContainer 
+          component={Paper}
+          sx={{
+            overflowX: 'auto',
+            '& .MuiTable-root': {
+              minWidth: 650,
+            },
+            '& .MuiTableCell-root': {
+              px: { xs: 1, sm: 2 },
+              py: { xs: 1, sm: 1.5 },
+              '&:last-child': {
+                pr: { xs: 1, sm: 2 }
+              }
+            }
+          }}
+        >
           <Table>
             <TableHead>
               <TableRow>

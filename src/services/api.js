@@ -22,6 +22,24 @@ const mockData = {
       status: 'Active',
       type: 'Customer',
     },
+    {
+      id: 2,
+      name: 'Jane Smith',
+      email: 'jane.smith@example.com',
+      phone: '+1 234 567 891',
+      company: 'Innovation Inc',
+      status: 'Active',
+      type: 'Lead',
+    },
+    {
+      id: 3,
+      name: 'Bob Johnson',
+      email: 'bob.johnson@example.com',
+      phone: '+1 234 567 892',
+      company: 'Growth Ltd',
+      status: 'Inactive',
+      type: 'Customer',
+    },
   ],
   campaigns: [
     {
@@ -52,7 +70,7 @@ const apiService = {
       return { data: deal };
     },
   },
-  contacts: {
+  customers: {
     getAll: async () => {
       await delay(500);
       return { data: mockData.contacts };
@@ -62,6 +80,29 @@ const apiService = {
       const contact = mockData.contacts.find(c => c.id === id);
       if (!contact) throw new Error('Contact not found');
       return { data: contact };
+    },
+    create: async (data) => {
+      await delay(500);
+      const newContact = {
+        id: Math.max(...mockData.contacts.map(c => c.id)) + 1,
+        ...data,
+      };
+      mockData.contacts.push(newContact);
+      return { data: newContact };
+    },
+    update: async (id, data) => {
+      await delay(500);
+      const index = mockData.contacts.findIndex(c => c.id === id);
+      if (index === -1) throw new Error('Contact not found');
+      mockData.contacts[index] = { ...mockData.contacts[index], ...data };
+      return { data: mockData.contacts[index] };
+    },
+    delete: async (id) => {
+      await delay(500);
+      const index = mockData.contacts.findIndex(c => c.id === id);
+      if (index === -1) throw new Error('Contact not found');
+      mockData.contacts.splice(index, 1);
+      return { data: { success: true } };
     },
   },
   campaigns: {

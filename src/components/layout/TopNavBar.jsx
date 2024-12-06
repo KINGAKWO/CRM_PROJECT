@@ -14,6 +14,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useMediaQuery } from '@mui/material';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -56,6 +57,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const TopNavBar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -66,20 +68,33 @@ const TopNavBar = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-      <Search>
-        <SearchIconWrapper>
-          <SearchIcon />
-        </SearchIconWrapper>
-        <StyledInputBase
-          placeholder="Search..."
-          inputProps={{ 'aria-label': 'search' }}
-        />
-      </Search>
+    <Box sx={{ 
+      display: 'flex', 
+      alignItems: 'center', 
+      flex: 1,
+      flexDirection: { xs: 'column', sm: 'row' },
+      gap: { xs: 1, sm: 0 }
+    }}>
+      {!isMobile && (
+        <Search>
+          <SearchIconWrapper>
+            <SearchIcon />
+          </SearchIconWrapper>
+          <StyledInputBase
+            placeholder="Search..."
+            inputProps={{ 'aria-label': 'search' }}
+          />
+        </Search>
+      )}
       
-      <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto' }}>
+      <Box sx={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        ml: { xs: 0, sm: 'auto' },
+        width: { xs: '100%', sm: 'auto' }
+      }}>
         <Tooltip title="Notifications">
-          <IconButton color="inherit">
+          <IconButton color="inherit" size={isMobile ? "small" : "medium"}>
             <Badge badgeContent={4} color="error">
               <NotificationsIcon />
             </Badge>
@@ -87,7 +102,7 @@ const TopNavBar = () => {
         </Tooltip>
         
         <Tooltip title="Settings">
-          <IconButton color="inherit">
+          <IconButton color="inherit" size={isMobile ? "small" : "medium"}>
             <SettingsIcon />
           </IconButton>
         </Tooltip>
@@ -96,8 +111,9 @@ const TopNavBar = () => {
           <IconButton
             onClick={handleProfileMenuOpen}
             color="inherit"
+            size={isMobile ? "small" : "medium"}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>
+            <Avatar sx={{ width: isMobile ? 24 : 32, height: isMobile ? 24 : 32 }}>
               <AccountCircleIcon />
             </Avatar>
           </IconButton>

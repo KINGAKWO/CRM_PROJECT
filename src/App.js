@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { theme } from './theme/theme';
@@ -10,32 +10,38 @@ import MarketingPage from './components/marketing/MarketingPage';
 import SalesPage from './components/sales/SalesPage';
 import LoginPage from './components/auth/LoginPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-import ReportsDashboard from './components/reports/ReportsDashboard';
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <MainLayout>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/contacts" element={<ContactsPage />} />
-                    <Route path="/marketing" element={<MarketingPage />} />
-                    <Route path="/sales" element={<SalesPage />} />
-                    <Route path="/reports" element={<ReportsDashboard />} />
-                  </Routes>
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </MainLayout>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="contacts" element={
+              <ProtectedRoute>
+                <ContactsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="marketing" element={
+              <ProtectedRoute>
+                <MarketingPage />
+              </ProtectedRoute>
+            } />
+            <Route path="sales" element={
+              <ProtectedRoute>
+                <SalesPage />
+              </ProtectedRoute>
+            } />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        </Routes>
       </Router>
     </ThemeProvider>
   );

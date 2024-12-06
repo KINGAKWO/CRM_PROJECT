@@ -21,7 +21,6 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import {
-  arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
@@ -31,16 +30,45 @@ import DealForm from './DealForm';
 
 const stages = ['Lead', 'Meeting Scheduled', 'Proposal Sent', 'Negotiation', 'Closed Won'];
 
-const initialDeals = {
-  'Lead': [
-    { id: 1, name: 'Software License Deal', value: 15000, company: 'Tech Corp', stage: 'Lead', updatedAt: new Date() },
-    { id: 2, name: 'Consulting Project', value: 8000, company: 'Innovation Inc', stage: 'Lead', updatedAt: new Date() },
-  ],
-  'Meeting Scheduled': [
-    { id: 3, name: 'Enterprise Package', value: 45000, company: 'Big Corp', stage: 'Meeting Scheduled', updatedAt: new Date() },
-  ],
-  // ... add more deals for other stages
-};
+// Initialize deals with empty arrays for each stage
+const initialDeals = stages.reduce((acc, stage) => {
+  acc[stage] = [];
+  return acc;
+}, {});
+
+// Add some sample deals
+initialDeals['Lead'] = [
+  { 
+    id: 1, 
+    name: 'Software License Deal', 
+    value: 15000, 
+    company: 'Tech Corp', 
+    stage: 'Lead', 
+    priority: 'high',
+    createdAt: new Date(),
+  },
+  { 
+    id: 2, 
+    name: 'Consulting Project', 
+    value: 8000, 
+    company: 'Innovation Inc', 
+    stage: 'Lead',
+    priority: 'medium',
+    createdAt: new Date(),
+  },
+];
+
+initialDeals['Meeting Scheduled'] = [
+  { 
+    id: 3, 
+    name: 'Enterprise Package', 
+    value: 45000, 
+    company: 'Big Corp', 
+    stage: 'Meeting Scheduled',
+    priority: 'high',
+    createdAt: new Date(),
+  },
+];
 
 const SalesPage = () => {
   const [deals, setDeals] = useState(initialDeals);
@@ -98,6 +126,7 @@ const SalesPage = () => {
       id: Math.max(0, ...Object.values(deals).flat().map(d => d.id)) + 1,
       ...values,
       updatedAt: new Date(),
+      createdAt: new Date(),
     };
 
     setDeals(prev => ({
@@ -106,6 +135,7 @@ const SalesPage = () => {
     }));
 
     showSnackbar('Deal added successfully');
+    setFormOpen(false);
   };
 
   const handleEditDeal = (deal) => {
@@ -149,16 +179,40 @@ const SalesPage = () => {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <Grid container spacing={2}>
+        <Grid container spacing={{ xs: 1, sm: 2 }}>
           {stages.map((stage) => (
-            <Grid item xs={12} sm={6} md={2.4} key={stage}>
-              <Card>
+            <Grid 
+              item 
+              xs={12} 
+              sm={6} 
+              lg={2.4} 
+              key={stage}
+              sx={{
+                minWidth: { xs: '100%', sm: '300px' }
+              }}
+            >
+              <Card sx={{ 
+                height: { xs: 'auto', lg: '100%' },
+                mb: { xs: 1, sm: 0 }
+              }}>
                 <CardHeader
                   title={stage}
-                  titleTypographyProps={{ variant: 'h6' }}
-                  sx={{ pb: 1 }}
+                  titleTypographyProps={{ 
+                    variant: 'h6',
+                    fontSize: { xs: '1rem', sm: '1.25rem' }
+                  }}
+                  sx={{ 
+                    pb: 1,
+                    '& .MuiCardHeader-content': {
+                      minWidth: 0
+                    }
+                  }}
                   action={
-                    <Typography color="textSecondary" variant="caption">
+                    <Typography 
+                      color="textSecondary" 
+                      variant="caption"
+                      sx={{ ml: 1 }}
+                    >
                       {deals[stage]?.length || 0}
                     </Typography>
                   }

@@ -91,26 +91,35 @@ const Dashboard = () => {
   ];
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" sx={{ mb: 4 }}>
+    <Box sx={{ p: { xs: 2, sm: 3 } }}>
+      <Typography 
+        variant="h4" 
+        sx={{ 
+          mb: { xs: 2, sm: 4 },
+          fontSize: { xs: '1.5rem', sm: '2rem' }
+        }}
+      >
         Dashboard Overview
       </Typography>
 
       {/* Stats Cards */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
+      <Grid container spacing={{ xs: 1, sm: 2 }} sx={{ mb: { xs: 2, sm: 4 } }}>
         {stats.map((stat, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
+          <Grid item xs={6} sm={6} md={3} key={index}>
             <StatCard {...stat} />
           </Grid>
         ))}
       </Grid>
 
       {/* Charts and Tables */}
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={8}>
+      <Grid container spacing={{ xs: 1, sm: 2 }}>
+        <Grid item xs={12} lg={8}>
           <StyledCard>
             <CardHeader
               title="Sales Overview"
+              titleTypographyProps={{ 
+                variant: { xs: 'h6', sm: 'h5' }
+              }}
               action={
                 <IconButton>
                   <MoreVertIcon />
@@ -118,7 +127,7 @@ const Dashboard = () => {
               }
             />
             <CardContent>
-              <Box sx={{ height: 300 }}>
+              <Box sx={{ height: { xs: 200, sm: 300 } }}>
                 <SalesChart />
               </Box>
             </CardContent>

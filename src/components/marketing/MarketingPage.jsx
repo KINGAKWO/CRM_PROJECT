@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Grid,
@@ -13,43 +13,73 @@ import {
   ListItemText,
   ListItemIcon,
   Divider,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import PeopleIcon from '@mui/icons-material/People';
-
-const campaigns = [
-  {
-    id: 1,
-    name: 'Summer Sale Newsletter',
-    status: 'Active',
-    progress: 75,
-    sent: 1500,
-    opened: 720,
-    clicked: 250,
-  },
-  {
-    id: 2,
-    name: 'New Product Launch',
-    status: 'Draft',
-    progress: 30,
-    sent: 0,
-    opened: 0,
-    clicked: 0,
-  },
-  {
-    id: 3,
-    name: 'Customer Feedback Survey',
-    status: 'Completed',
-    progress: 100,
-    sent: 2000,
-    opened: 1200,
-    clicked: 800,
-  },
-];
+import EmailCampaignForm from './EmailCampaignForm';
+import { api } from '../../services/api';
 
 const MarketingPage = () => {
+  const [campaigns, setCampaigns] = useState([
+    {
+      id: 1,
+      name: 'Summer Sale Newsletter',
+      status: 'Active',
+      progress: 75,
+      sent: 1500,
+      opened: 720,
+      clicked: 250,
+    },
+    {
+      id: 2,
+      name: 'New Product Launch',
+      status: 'Draft',
+      progress: 30,
+      sent: 0,
+      opened: 0,
+      clicked: 0,
+    },
+    {
+      id: 3,
+      name: 'Customer Feedback Survey',
+      status: 'Completed',
+      progress: 100,
+      sent: 2000,
+      opened: 1200,
+      clicked: 800,
+    },
+  ]);
+  
+  const [formOpen, setFormOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+
+  const handleNewCampaign = () => {
+    setFormOpen(true);
+  };
+
+  const handleFormSubmit = async (values) => {
+    try {
+      const response = await api.campaigns.create(values);
+      setCampaigns(prev => [...prev, response.data]);
+      setSnackbar({ 
+        open: true, 
+        message: 'Campaign created successfully', 
+        severity: 'success' 
+      });
+      setFormOpen(false);
+    } catch (error) {
+      setSnackbar({ 
+        open: true, 
+        message: 'Failed to create campaign', 
+        severity: 'error' 
+      });
+    }
+  };
+
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" sx={{ mb: 4 }}>
@@ -69,7 +99,7 @@ const MarketingPage = () => {
                   </ListItemIcon>
                   <ListItemText
                     primary="Total Campaigns"
-                    secondary="12 Active"
+                    secondary={`${campaigns.length} Active`}
                   />
                 </ListItem>
                 <ListItem>
@@ -104,6 +134,7 @@ const MarketingPage = () => {
                 <Button
                   variant="contained"
                   startIcon={<CampaignIcon />}
+                  onClick={handleNewCampaign}
                 >
                   New Campaign
                 </Button>
@@ -139,6 +170,24 @@ const MarketingPage = () => {
           </Card>
         </Grid>
       </Grid>
+
+      {/* Campaign Form Dialog */}
+      <EmailCampaignForm
+        open={formOpen}
+        onClose={() => setFormOpen(false)}
+        onSubmit={handleFormSubmit}
+      />
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      >
+        <Alert severity={snackbar.severity}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
