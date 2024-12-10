@@ -23,8 +23,15 @@ export const auth = {
   },
 
   logout: async () => {
-    await delay(200);
-    localStorage.removeItem('auth_token');
+    try {
+      await delay(200);
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('user');
+      return { success: true };
+    } catch (error) {
+      console.error('Logout failed:', error);
+      throw error;
+    }
   },
 
   getCurrentUser: () => {
@@ -39,5 +46,25 @@ export const auth = {
 
   isAuthenticated: () => {
     return !!localStorage.getItem('auth_token');
+  },
+
+  signup: async (userData) => {
+    await delay(500);
+    // In a real app, this would make an API call
+    const newUser = {
+      id: mockUsers.length + 1,
+      email: userData.email,
+      name: userData.name,
+      role: 'user',
+    };
+    
+    mockUsers.push({
+      ...newUser,
+      password: userData.password, // In real app, this would be hashed
+    });
+
+    const token = btoa(JSON.stringify({ id: newUser.id, email: newUser.email, role: newUser.role }));
+    localStorage.setItem('auth_token', token);
+    return { user: newUser, token };
   },
 }; 

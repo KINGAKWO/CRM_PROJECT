@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   IconButton,
   InputBase,
@@ -15,6 +16,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useMediaQuery } from '@mui/material';
+import { auth } from '../../services/auth';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -56,6 +58,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const TopNavBar = () => {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
@@ -65,6 +68,16 @@ const TopNavBar = () => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await auth.logout();
+      handleMenuClose();
+      navigate('/login'); // Redirect to login page
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   return (
@@ -128,7 +141,7 @@ const TopNavBar = () => {
       >
         <MenuItem>Profile</MenuItem>
         <MenuItem>My Account</MenuItem>
-        <MenuItem>Logout</MenuItem>
+        <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </Box>
   );

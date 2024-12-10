@@ -1,5 +1,6 @@
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const CompressionPlugin = require('compression-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
   webpack: {
@@ -8,6 +9,11 @@ module.exports = {
         analyzerMode: process.env.ANALYZE === 'true' ? 'server' : 'disabled',
       }),
       new CompressionPlugin(),
+      new ESLintPlugin({
+        extensions: ['js', 'jsx'],
+        failOnError: false,
+        emitWarning: true,
+      })
     ],
     configure: (webpackConfig) => {
       webpackConfig.optimization.splitChunks = {
@@ -31,6 +37,25 @@ module.exports = {
         },
       };
       return webpackConfig;
+    },
+  },
+  eslint: {
+    enable: true,
+    mode: 'extends',
+    configure: {
+      extends: ['react-app', 'react-app/jest'],
+      rules: {
+        // Add custom rules here
+        'no-console': 'warn',
+        'no-unused-vars': 'warn',
+      },
+    },
+  },
+  jest: {
+    configure: {
+      moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/src/$1',
+      },
     },
   },
 }; 
